@@ -855,10 +855,29 @@ class libgl(MTLibrary):
 class libembind(CXXLibrary):
   name = 'libembind'
   cflags = ['-std=c++11']
-  src_dir = ['system', 'lib', 'embind']
   depends = ['libc++abi']
-  src_glob = '*.cpp'
   never_force = True
+
+  def get_files(self):
+    return [shared.path_from_root('system', 'lib', 'embind', 'bind.cpp')]
+
+
+class libfetch(CXXLibrary, MTLibrary):
+  name = 'libfetch'
+  depends = ['libc++abi']
+  never_force = True
+
+  def get_files(self):
+    return [shared.path_from_root('system', 'lib', 'fetch', 'emscripten_fetch.cpp')]
+
+
+class libasmfs(CXXLibrary, MTLibrary):
+  name = 'libasmfs'
+  depends = ['libc++abi']
+  never_force = True
+
+  def get_files(self):
+    return [shared.path_from_root('system', 'lib', 'fetch', 'asmfs.cpp')]
 
 
 class libhtml5(Library):
@@ -1075,13 +1094,16 @@ def calculate(temp_files, in_temp, stdout_, stderr_, forced=[]):
     always_include.add('libcompiler_rt')
 
   libs_to_link = []
+  required_by_deps = []
   already_included = set()
   system_libs_map = Library.get_usable_variations()
   system_libs = sorted(system_libs_map.values(), key=lambda lib: lib.name)
 
-  # Setting this in the environment will avoid checking dependencies and make building big projects a little faster
-  # 1 means include everything; otherwise it can be the name of a lib (libc++, etc.)
-  # You can provide 1 to include everything, or a comma-separated list with the ones you want
+  # Setting this in the environment will avoid checking dependencies and make
+  # building big projects a little faster 1 means include everything; otherwise
+  # it can be the name of a lib (libc++, etc.).
+  # You can provide 1 to include everything, or a comma-separated list with the
+  # ones you want
   force = os.environ.get('EMCC_FORCE_STDLIBS')
   if force == '1':
     force = ','.join(name for name, lib in system_libs_map.items() if not lib.never_force)
@@ -1108,7 +1130,7 @@ def calculate(temp_files, in_temp, stdout_, stderr_, forced=[]):
 
     # Recursively add dependencies
     for d in lib.get_depends():
-      add_library(system_libs_map[d])
+      required_by_deps.append(d)
 
     for d in lib.js_depends:
       d = '_' + d
@@ -1147,6 +1169,9 @@ def calculate(temp_files, in_temp, stdout_, stderr_, forced=[]):
     # We need to build and link the library in
     add_library(lib)
 
+  while required_by_deps:
+    add_library(system_libs_map[required_by_deps.pop(0)])
+
   if shared.Settings.WASM_BACKEND:
     add_library(system_libs_map['libcompiler_rt_wasm'])
     add_library(system_libs_map['libc_rt_wasm'])
@@ -1163,7 +1188,7 @@ def calculate(temp_files, in_temp, stdout_, stderr_, forced=[]):
   # we might have exception-supporting versions of them from elsewhere, and if libc++abi
   # is first then it would "win", breaking exception throwing from those string
   # header methods. To avoid that, we link libc++abi last.
-  libs_to_link.sort(key=lambda x: x[0].endswith('libc++abi.bc'))
+  libs_to_link.sort(key=lambda x: 'libc++abi' in x[0])
 
   # Wrap libraries in --whole-archive, as needed.  We need to do this last
   # since otherwise the abort sorting won't make sense.
