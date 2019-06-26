@@ -7791,6 +7791,10 @@ extern "C" {
     self.do_run(open(path_from_root('tests', 'core', 'test_ubsan_full_null_ref.cpp')).read(),
                 post_build=modify_env, assert_all=True, expected_output=expected_output)
 
+  def test_template_class_deduction(self):
+    self.emcc_args += ['-std=c++17']
+    self.do_run_in_out_file_test('tests', 'core', 'test_template_class_deduction')
+
 
 # Generate tests for everything
 def make_run(name, emcc_args, settings=None, env=None):
