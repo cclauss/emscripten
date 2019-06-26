@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+# Copyright 2019 The Emscripten Authors.  All rights reserved.
+# Emscripten is available under two separate licenses, the MIT license and the
+# University of Illinois/NCSA Open Source License.  Both these licenses can be
+# found in the LICENSE file.
 
 import os
 import sys
@@ -9,6 +13,7 @@ local_src = os.path.join(script_dir, 'libcxx')
 local_inc = os.path.join(os.path.dirname(script_dir), 'include', 'libcxx')
 
 preserve_files = ('readme.txt', 'symbols')
+
 
 def clean_dir(dirname):
   for f in os.listdir(dirname):
@@ -46,6 +51,7 @@ def main():
 
   shutil.copy2(os.path.join(libcxx_dir, 'CREDITS.TXT'), local_src)
   shutil.copy2(os.path.join(libcxx_dir, 'LICENSE.TXT'), local_src)
+
 
 if __name__ == '__main__':
   main()
