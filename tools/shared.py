@@ -26,6 +26,11 @@ from .tempfiles import try_delete
 from . import jsrun, cache, tempfiles, colored_logger
 from . import response_file
 
+try:
+  unicode
+except NameError:
+  unicode = str
+
 colored_logger.enable()
 
 __rootpath__ = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -1657,7 +1662,7 @@ class Building(object):
       raise
     if 'EMMAKEN_JUST_CONFIGURE' in env:
       del env['EMMAKEN_JUST_CONFIGURE']
-    if res.returncode is not 0:
+    if res.returncode != 0:
       logging.error('Configure step failed with non-zero return code: %s.  Command line: %s at %s' % (res.returncode, ' '.join(args), os.getcwd()))
       raise subprocess.CalledProcessError(cmd=args, returncode=res.returncode)
 

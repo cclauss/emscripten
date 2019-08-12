@@ -22,6 +22,11 @@ from tools import jsrun, shared
 from runner import RunnerCore, path_from_root, core_test_modes, get_bullet_library
 from runner import skip_if, no_wasm_backend, needs_dlfcn, no_windows, env_modify, with_env_modify
 
+try:
+  unicode
+except NameError:
+  unicode = str
+
 # decorators for limiting which modes a test can run in
 
 
@@ -1510,36 +1515,36 @@ int main() {
     src = open(path_from_root('tests', 'life.c'), 'r').read()
     self.do_run(src, '''--------------------------------
 []                                    []                  [][][]
-                    []  []    []    [][]  []            []  []  
-[]                [][]  [][]              [][][]      []        
+                    []  []    []    [][]  []            []  []
+[]                [][]  [][]              [][][]      []
                   []    []      []      []  [][]    []        []
                   []  [][]    []        []    []  []    [][][][]
-                    [][]      [][]  []    [][][]  []        []  
-                                []  [][]  [][]    [][]  [][][]  
+                    [][]      [][]  []    [][][]  []        []
+                                []  [][]  [][]    [][]  [][][]
                                     [][]          [][][]  []  []
                                     [][]              [][]    []
                                                           [][][]
-                                                            []  
-                                                                
-                                                                
-                                                                
-                                                                
-                                        [][][]                  
-                                      []      [][]      [][]    
-                                      [][]      []  [][]  [][]  
-                                                    [][]  [][]  
-                                                      []        
-                  [][]                                          
+                                                            []
+
+
+
+
+                                        [][][]
+                                      []      [][]      [][]
+                                      [][]      []  [][]  [][]
+                                                    [][]  [][]
+                                                      []
+                  [][]
                   [][]                                        []
 []                                                      [][]  []
                                                   [][][]      []
-                                                []      [][]    
+                                                []      [][]
 []                                                    []      []
-                                                          []    
+                                                          []
 []                                                        []  []
-                                              [][][]            
-                                                                
-                                  []                            
+                                              [][][]
+
+                                  []
                               [][][]                          []
 --------------------------------
 ''', ['2'], force_c=True)  # noqa
@@ -6907,7 +6912,7 @@ int main() {
   std::cout << txtTestString.data() << std::endl;
   return 0;
 }
-      ''', '''std_string(const char* s) 
+      ''', '''std_string(const char* s)
 someweirdtext
 212121
 212121

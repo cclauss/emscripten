@@ -805,7 +805,7 @@ There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR P
             settings_changes.append(key)
             newargs[i] = newargs[i + 1] = ''
             assert key != 'WASM_BACKEND', 'do not set -s WASM_BACKEND, instead set EMCC_WASM_BACKEND=1 in the environment'
-      newargs = [arg for arg in newargs if arg is not '']
+      newargs = [arg for arg in newargs if arg != '']
 
       settings_key_changes = set()
       for s in settings_changes:
@@ -911,7 +911,7 @@ There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR P
 
       original_input_files = input_files[:]
 
-      newargs = [a for a in newargs if a is not '']
+      newargs = [a for a in newargs if a != '']
 
       # -c means do not link in gcc, and for us, the parallel is to not go all the way to JS, but stop at bitcode
       has_dash_c = '-c' in newargs
@@ -1174,7 +1174,7 @@ There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR P
           logging.debug('enabling js opts for EMTERPRETIFY')
           options.js_opts = True
         options.force_js_opts = True
-        assert options.use_closure_compiler is not 2, 'EMTERPRETIFY requires valid asm.js, and is incompatible with closure 2 which disables that'
+        assert options.use_closure_compiler != 2, 'EMTERPRETIFY requires valid asm.js, and is incompatible with closure 2 which disables that'
         assert not use_source_map(options), 'EMTERPRETIFY is not compatible with source maps (maps are not useful in emterpreted code, and splitting out non-emterpreted source maps is not yet implemented)'
 
       if shared.Settings.DEAD_FUNCTIONS:
@@ -2385,7 +2385,7 @@ def parse_args(newargs):
   if should_exit:
     sys.exit(0)
 
-  newargs = [arg for arg in newargs if arg is not '']
+  newargs = [arg for arg in newargs if arg != '']
   return options, settings_changes, newargs
 
 

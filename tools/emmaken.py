@@ -214,7 +214,7 @@ try:
       if newargs[i].startswith('-O'):
         print('emmaken.py: WARNING: Optimization flags (-Ox) are ignored in emmaken. Tell emscripten.py to do that, or run LLVM opt.', file=sys.stderr)
         newargs[i] = ''
-    newargs = [arg for arg in newargs if arg is not ''] + CC_ADDITIONAL_ARGS
+    newargs = [arg for arg in newargs if arg != ''] + CC_ADDITIONAL_ARGS
     newargs.append('-emit-llvm')
     if not use_linker:
       newargs.append('-c')

@@ -16,6 +16,11 @@ from runner import BrowserCore, no_windows, chdir
 from tools import shared
 from tools.shared import PYTHON, EMCC, NODE_JS, path_from_root, Popen, PIPE, WINDOWS, run_process, run_js, JS_ENGINES, CLANG_CC
 
+try:
+  unichr
+except NameError:
+  unichr = chr
+
 node_ws_module_installed = False
 
 NPM = os.path.join(os.path.dirname(NODE_JS[0]), 'npm.cmd' if WINDOWS else 'npm')

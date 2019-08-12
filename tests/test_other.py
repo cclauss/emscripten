@@ -148,7 +148,7 @@ There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR P
       process = run_process([PYTHON, compiler, path_from_root('tests', 'hello_world_error' + suffix)], stdout=PIPE, stderr=PIPE, check=False)
       assert not os.path.exists('a.out.js'), 'compilation failed, so no output file is expected'
       assert len(process.stdout) == 0, process.stdout
-      assert process.returncode is not 0, 'Failed compilation must return a nonzero error code!'
+      assert process.returncode != 0, 'Failed compilation must return a nonzero error code!'
       self.assertNotContained('IOError', process.stderr) # no python stack
       self.assertNotContained('Traceback', process.stderr) # no python stack
       self.assertContained('error: invalid preprocessing directive', process.stderr)
@@ -3172,7 +3172,7 @@ printErr('dir was ' + process.env.EMCC_BUILD_DIR);
 
   def test_float_h(self):
     process = run_process([PYTHON, EMCC, path_from_root('tests', 'float+.c')], stdout=PIPE, stderr=PIPE)
-    assert process.returncode is 0, 'float.h should agree with our system: ' + process.stdout + '\n\n\n' + process.stderr
+    assert process.returncode == 0, 'float.h should agree with our system: ' + process.stdout + '\n\n\n' + process.stderr
 
   def test_default_obj_ext(self):
     outdir = os.path.join(self.get_dir(), 'out_dir') + '/'
@@ -3749,7 +3749,7 @@ int main()
       print(wasm)
       process = run_process([PYTHON, EMCC, path_from_root('tests', 'hello_world.cpp'), '-s', 'SIDE_MODULE=1', '-o', 'a.so', '-s', 'WASM=%d' % wasm], stdout=PIPE, stderr=PIPE, check=False)
       self.assertContained('SIDE_MODULE must only be used when compiling to an executable shared library, and not when emitting LLVM bitcode', process.stderr)
-      assert process.returncode is not 0
+      assert process.returncode != 0
 
   @no_wasm_backend()
   def test_simplify_ifs(self):
@@ -4095,13 +4095,13 @@ int main(int argc, char **argv) {
     for code in [0, 123]:
       for no_exit in [0, 1]:
         for call_exit in [0, 1]:
-          for async in [0, 1]:
-            run_process([PYTHON, EMCC, 'src.cpp', '-DCODE=%d' % code, '-s', 'EXIT_RUNTIME=%d' % (1 - no_exit), '-DCALL_EXIT=%d' % call_exit, '-s', 'BINARYEN_ASYNC_COMPILATION=%d' % async])
+          for async_ in [0, 1]:
+            run_process([PYTHON, EMCC, 'src.cpp', '-DCODE=%d' % code, '-s', 'EXIT_RUNTIME=%d' % (1 - no_exit), '-DCALL_EXIT=%d' % call_exit, '-s', 'BINARYEN_ASYNC_COMPILATION=%d' % async_])
             for engine in JS_ENGINES:
               # async compilation can't return a code in d8
-              if async and engine == V8_ENGINE:
+              if async_ and engine == V8_ENGINE:
                 continue
-              print(code, no_exit, call_exit, async, engine)
+              print(code, no_exit, call_exit, async_, engine)
               process = run_process(engine + ['a.out.js'], stdout=PIPE, stderr=PIPE, check=False)
               # we always emit the right exit code, whether we exit the runtime or not
               assert process.returncode == code, [process.returncode, process.stdout, process.stderr]
@@ -8358,7 +8358,7 @@ int main() {
       print('generating: ' + f)
       process = run_process([PYTHON, EMCC, path_from_root('tests', 'hello_world.cpp'), '-o', f], stdout=PIPE, stderr=PIPE, check=False)
       print(process.stderr)
-      assert process.returncode is not 0, 'wasm suffix is an error'
+      assert process.returncode != 0, 'wasm suffix is an error'
       self.assertContained('output file "%s" has a wasm suffix, but we cannot emit wasm by itself, except as a dynamic library' % f, process.stderr)
 
   @no_wasm_backend('uses SIDE_MODULE')
