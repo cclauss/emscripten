@@ -106,7 +106,8 @@ def run_js(filename, engine, args=None,
         stderr=stderr,
         cwd=cwd,
         timeout=timeout,
-        universal_newlines=True)
+        universal_newlines=True,
+        check=skip_check)
   except Exception:
     # the failure may be because the engine is not present. show the proper
     # error in that case
