@@ -407,8 +407,7 @@ def also_with_nodefs(func):
       assert fs is None
     func(self, *args, **kwargs)
 
-  parameterize(metafunc, {'': (None,),
-                          'nodefs': ('nodefs',)})
+  parameterize(metafunc, {'': (None,), 'nodefs': ('nodefs',)})
   return metafunc
 
 
@@ -426,9 +425,7 @@ def also_with_nodefs_both(func):
       assert fs is None
     func(self, *args, **kwargs)
 
-  parameterize(metafunc, {'': (None,),
-                          'nodefs': ('nodefs',),
-                          'rawfs': ('rawfs',)})
+  parameterize(metafunc, {'': (None,), 'nodefs': ('nodefs',), 'rawfs': ('rawfs',)})
   return metafunc
 
 
@@ -450,10 +447,7 @@ def with_all_fs(func):
 
   # TODO(sbc): rather than treat WASMFS as orthogonal we should
   # probably make it combinatorial with nodefs and noderawfs.
-  parameterize(metafunc, {'': (None,),
-                          'nodefs': ('nodefs',),
-                          'rawfs': ('rawfs',),
-                          'wasmfs': ('wasmfs',)})
+  parameterize(metafunc, {'': (None,), 'nodefs': ('nodefs',), 'rawfs': ('rawfs',), 'wasmfs': ('wasmfs',)})
   return metafunc
 
 
